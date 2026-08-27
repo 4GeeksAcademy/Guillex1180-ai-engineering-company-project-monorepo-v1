@@ -1,0 +1,14 @@
+__pycache__/
+*.py[cod]
+
+.pytest_cache/
+
+node_modules/
+dist/
+
+.env.local
+.env.development.local
+
+results.csv
+
+Captura de pantalla*.png
