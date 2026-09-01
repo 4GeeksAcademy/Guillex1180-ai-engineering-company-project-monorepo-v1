@@ -7,8 +7,12 @@ from typing import Any
 
 from tinydb import TinyDB
 
-from database import db, suppliers
-from models import SupplierCreate, VALID_CATEGORIES
+if __package__:
+    from .database import db, suppliers
+    from .models import SupplierCreate, VALID_CATEGORIES
+else:
+    from database import db, suppliers
+    from models import SupplierCreate, VALID_CATEGORIES
 
 
 TOTAL_SUPPLIERS = 100

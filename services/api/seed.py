@@ -1,7 +1,11 @@
 from datetime import datetime, timezone
 
-from database import db, suppliers
-from seed_data import SUPPLIERS_SEED
+if __package__:
+    from .database import db, suppliers
+    from .seed_data import SUPPLIERS_SEED
+else:
+    from database import db, suppliers
+    from seed_data import SUPPLIERS_SEED
 
 
 def run_seeder() -> int:

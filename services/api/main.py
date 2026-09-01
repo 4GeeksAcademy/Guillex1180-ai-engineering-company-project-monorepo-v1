@@ -4,8 +4,12 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from routes.suppliers import router as suppliers_router
-from seed import run_seeder
+if __package__:
+    from .routes.suppliers import router as suppliers_router
+    from .seed import run_seeder
+else:
+    from routes.suppliers import router as suppliers_router
+    from seed import run_seeder
 
 
 def _cors_origins_from_env() -> list[str]:

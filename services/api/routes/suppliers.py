@@ -5,8 +5,12 @@ from fastapi import APIRouter, HTTPException, Query, Response, status
 from pydantic import BaseModel, ConfigDict, Field
 from tinydb.table import Document
 
-from database import suppliers
-from models import Country, SupplierCreate, SupplierResponse, SupplierStatus
+if __package__ == "services.api.routes":
+    from ..database import suppliers
+    from ..models import Country, SupplierCreate, SupplierResponse, SupplierStatus
+else:
+    from database import suppliers
+    from models import Country, SupplierCreate, SupplierResponse, SupplierStatus
 
 
 router = APIRouter(prefix="/suppliers", tags=["suppliers"])
