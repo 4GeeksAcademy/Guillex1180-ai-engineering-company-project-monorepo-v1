@@ -132,6 +132,27 @@ def test_get_and_update_authenticated_profile(client: TestClient) -> None:
     assert update_response.json()["address"] == "Calle Test 1"
 
 
+def test_user_cannot_access_or_update_another_users_profile(client: TestClient) -> None:
+    assert register_user(client).status_code == 201
+    other_registration = register_user(
+        client,
+        email="other@example.com",
+        name="Other User",
+    )
+    headers = auth_headers(client)
+    other_user_id = other_registration.json()["id"]
+
+    get_response = client.get(f"/profiles/{other_user_id}", headers=headers)
+    update_response = client.put(
+        f"/profiles/{other_user_id}",
+        headers=headers,
+        json={"name": "Unauthorized Update"},
+    )
+
+    assert get_response.status_code == 403
+    assert update_response.status_code == 403
+
+
 def test_protected_route_without_token_returns_401(client: TestClient) -> None:
     response = client.get("/auth/me")
 
