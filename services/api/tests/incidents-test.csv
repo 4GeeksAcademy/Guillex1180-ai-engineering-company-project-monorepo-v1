@@ -1,0 +1,2 @@
+incident_id,date,country,customer_type,tracking_number,carrier,category,description,status,customer_email,satisfaction_score
+TRF-000001,2026-08-01,ES,B2C,TRK12345678,MRW,LOST_PARCEL,Paquete perdido,CLOSED,cliente@example.com,4
