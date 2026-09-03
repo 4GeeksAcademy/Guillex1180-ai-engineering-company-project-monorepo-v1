@@ -11,3 +11,5 @@ DATABASE_PATH.parent.mkdir(parents=True, exist_ok=True)
 
 db = TinyDB(DATABASE_PATH)
 suppliers = db.table("suppliers")
+users = db.table("users")
+profiles = db.table("profiles")

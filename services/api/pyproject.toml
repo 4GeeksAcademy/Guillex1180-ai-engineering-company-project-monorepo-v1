@@ -8,6 +8,12 @@ dependencies = [
     "pydantic>=2.11,<3",
     "tinydb==4.8.2",
     "uvicorn==0.35.0",
+    "python-jose[cryptography]==3.5.0",
+    "passlib[bcrypt]==1.7.4",
+    "libpass[bcrypt]>=1.9.3",
+    "python-multipart>=0.0.32",
+    "pydantic-settings>=2.15.0",
+    "pandas>=3.0.5",
 ]
 
 [project.scripts]
@@ -21,3 +27,9 @@ build-backend = "setuptools.build_meta"
 [tool.setuptools]
 py-modules = ["database", "main", "models", "seed", "seed_100", "seed_data"]
 packages = ["routes"]
+
+[dependency-groups]
+dev = [
+    "httpx>=0.28.1",
+    "pytest>=9.1.1",
+]

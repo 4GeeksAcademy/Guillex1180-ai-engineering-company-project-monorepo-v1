@@ -14,7 +14,9 @@ router = APIRouter(prefix="/api/incidents", tags=["incidents"])
 
 
 @router.post("/analyze")
-async def analyze_incidents(file: UploadFile | None = File(default=None)) -> dict:
+async def analyze_incidents(
+    file: UploadFile | None = File(default=None),
+) -> dict:
     if file is None:
         raise HTTPException(status_code=400, detail="No se proporcionó ningún archivo CSV.")
 
