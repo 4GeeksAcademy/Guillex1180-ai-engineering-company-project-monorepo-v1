@@ -1,16 +1,18 @@
 from datetime import datetime, timezone
 from typing import Annotated
 
-from fastapi import APIRouter, HTTPException, Query, Response, status
+from fastapi import APIRouter, Depends, HTTPException, Query, Response, status
 from pydantic import BaseModel, ConfigDict, Field
 from tinydb.table import Document
 
 if __package__ == "services.api.routes":
     from ..database import suppliers
     from ..models import Country, SupplierCreate, SupplierResponse, SupplierStatus
+    from ..dependencies import get_current_user
 else:
     from database import suppliers
     from models import Country, SupplierCreate, SupplierResponse, SupplierStatus
+    from dependencies import get_current_user
 
 
 router = APIRouter(prefix="/suppliers", tags=["suppliers"])
@@ -48,7 +50,7 @@ def _get_supplier_or_404(id: int) -> Document:
     response_model=SupplierResponse,
     status_code=status.HTTP_201_CREATED,
 )
-def create_supplier(payload: SupplierCreate) -> SupplierResponse:
+def create_supplier(payload: SupplierCreate, _: dict = Depends(get_current_user)) -> SupplierResponse:
     supplier_data = payload.model_dump(mode="json")
     supplier_data["updated_at"] = _utc_now_iso()
     supplier_id = suppliers.insert(supplier_data)
@@ -59,6 +61,7 @@ def create_supplier(payload: SupplierCreate) -> SupplierResponse:
 def list_suppliers(
     country: Annotated[Country | None, Query()] = None,
     category: Annotated[str | None, Query(min_length=1)] = None,
+    _: dict = Depends(get_current_user),
 ) -> list[SupplierResponse]:
     documents = suppliers.all()
 
@@ -77,12 +80,12 @@ def list_suppliers(
 
 
 @router.get("/{id}", response_model=SupplierResponse)
-def get_supplier(id: int) -> SupplierResponse:
+def get_supplier(id: int, _: dict = Depends(get_current_user)) -> SupplierResponse:
     return _to_response(_get_supplier_or_404(id))
 
 
 @router.patch("/{id}/rate", response_model=SupplierResponse)
-def update_supplier_rate(id: int, payload: SupplierRateUpdate) -> SupplierResponse:
+def update_supplier_rate(id: int, payload: SupplierRateUpdate, _: dict = Depends(get_current_user)) -> SupplierResponse:
     _get_supplier_or_404(id)
     suppliers.update(
         {
@@ -98,6 +101,7 @@ def update_supplier_rate(id: int, payload: SupplierRateUpdate) -> SupplierRespon
 def update_supplier_status(
     id: int,
     payload: SupplierStatusUpdate,
+    _: dict = Depends(get_current_user),
 ) -> SupplierResponse:
     _get_supplier_or_404(id)
     suppliers.update({"status": payload.status.value}, doc_ids=[id])
@@ -105,7 +109,7 @@ def update_supplier_status(
 
 
 @router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_supplier(id: int) -> Response:
+def delete_supplier(id: int, _: dict = Depends(get_current_user)) -> Response:
     _get_supplier_or_404(id)
     suppliers.remove(doc_ids=[id])
     return Response(status_code=status.HTTP_204_NO_CONTENT)

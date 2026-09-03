@@ -90,3 +90,95 @@ class SupplierResponse(SupplierBase):
             raise ValueError("updated_at must use the UTC timezone")
 
         return value
+
+
+class UserRole(str, enum.Enum):
+    ADMIN = "admin"
+    MANAGER = "manager"
+    USER = "user"
+
+
+class User(pydantic.BaseModel):
+    model_config = pydantic.ConfigDict(extra="forbid")
+
+    id: int
+    email: pydantic.EmailStr
+    hashed_password: str
+    is_active: bool = True
+    role: UserRole = UserRole.USER
+    created_at: str
+
+
+class UserCreate(pydantic.BaseModel):
+    model_config = pydantic.ConfigDict(extra="forbid")
+
+    email: pydantic.EmailStr
+    password: str = pydantic.Field(..., min_length=8)
+    name: str | None = pydantic.Field(default=None, min_length=1)
+    phone: str | None = None
+    address: str | None = None
+
+
+class UserUpdate(pydantic.BaseModel):
+    model_config = pydantic.ConfigDict(extra="forbid")
+
+    email: pydantic.EmailStr | None = None
+    password: str | None = pydantic.Field(default=None, min_length=8)
+    is_active: bool | None = None
+    role: UserRole | None = None
+
+
+class UserResponse(pydantic.BaseModel):
+    id: int
+    email: pydantic.EmailStr
+    is_active: bool
+    role: UserRole
+    created_at: str
+
+
+class LoginResponse(pydantic.BaseModel):
+    access_token: str
+    token_type: str = "bearer"
+
+
+class AuthUserResponse(pydantic.BaseModel):
+    id: int
+    email: pydantic.EmailStr
+    role: str
+    is_active: bool
+
+
+class AuthMeResponse(pydantic.BaseModel):
+    user: AuthUserResponse
+    profile: "Profile"
+
+
+class Profile(pydantic.BaseModel):
+    model_config = pydantic.ConfigDict(extra="forbid")
+
+    id: int
+    user_id: int
+    name: str | None = pydantic.Field(default=None, min_length=1)
+    phone: str | None = None
+    address: str | None = None
+
+
+class ProfileCreate(pydantic.BaseModel):
+    model_config = pydantic.ConfigDict(extra="forbid")
+
+    user_id: int
+    name: str | None = pydantic.Field(default=None, min_length=1)
+    phone: str | None = None
+    address: str | None = None
+
+
+class ProfileUpdate(pydantic.BaseModel):
+    model_config = pydantic.ConfigDict(extra="forbid")
+
+    name: str | None = pydantic.Field(default=None, min_length=1)
+    phone: str | None = None
+    address: str | None = None
+
+
+class ProfileResponse(Profile):
+    pass
