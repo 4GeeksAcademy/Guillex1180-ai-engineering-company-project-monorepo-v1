@@ -8,3 +8,5 @@ email-validator==2.2.0
 tinydb==4.8.2
 python-jose[cryptography]==3.5.0
 passlib[bcrypt]==1.7.4
+python-dotenv==1.1.1
+resend==2.19.0
