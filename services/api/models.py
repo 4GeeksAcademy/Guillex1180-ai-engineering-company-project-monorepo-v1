@@ -141,6 +141,34 @@ class LoginResponse(pydantic.BaseModel):
     token_type: str = "bearer"
 
 
+class ForgotPasswordRequest(pydantic.BaseModel):
+    model_config = pydantic.ConfigDict(extra="forbid")
+
+    email: pydantic.EmailStr
+
+
+class ForgotPasswordResponse(pydantic.BaseModel):
+    message: str
+
+
+class ResetPasswordRequest(pydantic.BaseModel):
+    model_config = pydantic.ConfigDict(extra="forbid")
+
+    token: str = pydantic.Field(..., min_length=1)
+    new_password: str = pydantic.Field(..., min_length=8)
+
+
+class ChangePasswordRequest(pydantic.BaseModel):
+    model_config = pydantic.ConfigDict(extra="forbid")
+
+    current_password: str = pydantic.Field(..., min_length=1)
+    new_password: str = pydantic.Field(..., min_length=8)
+
+
+class PasswordActionResponse(pydantic.BaseModel):
+    message: str
+
+
 class AuthUserResponse(pydantic.BaseModel):
     id: int
     email: pydantic.EmailStr

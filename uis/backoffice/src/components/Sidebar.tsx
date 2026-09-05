@@ -16,6 +16,11 @@ export function Sidebar() {
               Análisis de incidencias
             </NavLink>
           </li>
+          <li>
+            <NavLink className="menu-link" to="/account/change-password">
+              Cambiar contraseña
+            </NavLink>
+          </li>
         </ul>
       </nav>
     </aside>

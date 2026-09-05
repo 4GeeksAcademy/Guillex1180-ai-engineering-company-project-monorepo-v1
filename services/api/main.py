@@ -3,6 +3,8 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from slowapi import _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
 
 if __package__:
     from .routes.auth import router as auth_router
@@ -10,12 +12,14 @@ if __package__:
     from .routes.suppliers import router as suppliers_router
     from .routes.users import router as users_router
     from .seed import run_seeder
+    from .rate_limit import limiter
 else:
     from routes.auth import router as auth_router
     from routes.profiles import router as profiles_router
     from routes.suppliers import router as suppliers_router
     from routes.users import router as users_router
     from seed import run_seeder
+    from rate_limit import limiter
 
 
 def _cors_origins_from_env() -> list[str]:
@@ -46,6 +50,8 @@ app = FastAPI(
     version="1.0.0",
     lifespan=lifespan,
 )
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 app.add_middleware(
     CORSMiddleware,
