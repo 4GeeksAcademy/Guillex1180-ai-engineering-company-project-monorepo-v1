@@ -1,0 +1,1 @@
+"""Paquete compartido de tipos y esquemas Python."""
